@@ -47,7 +47,7 @@ export default async function handler(req, res) {
         if (isRegisteredUser) {
             // Agar user active (true) hai, to sirf "F" string return hogi bina JSON format ke
             res.setHeader('Content-Type', 'text/plain');
-            return res.status(200).send("F");
+            return res.status(200).send("S");
         } else {
             // Agar user false hai, to standard false JSON return hoga
             return res.status(200).json({ authorized: false });
